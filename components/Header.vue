@@ -1,6 +1,6 @@
 <template>
     <header>
-        <h1>R</h1>
+        <Nuxt-link to="/"><h1>R</h1></Nuxt-link>
         <ShopButton />
     </header>
 </template>

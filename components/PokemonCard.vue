@@ -32,7 +32,7 @@ export default {
     }
 }
 </script>
-<style scoped lang="scss">
+<style scoped>
     .card {
         display: flex;
         flex-direction: column;
@@ -44,9 +44,10 @@ export default {
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
         border-radius: 5px;
         margin: 1em 0.5em;
-        &:hover {
-            cursor: pointer;
-        }
+    }
+
+    .card:hover {
+        cursor: pointer;
     }
 
     img {
@@ -56,5 +57,9 @@ export default {
 
     h3 {
         text-transform: capitalize;
+    }
+
+    h3, p {
+        color: var(--color-black);
     }
 </style>
