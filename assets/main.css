@@ -4,6 +4,11 @@
 }
 
 @font-face {
+    font-family: 'Roboto Italic';
+    src: url('~/assets/font/Roboto/Roboto-MediumItalic.ttf');
+}
+
+@font-face {
     font-family: 'Roboto Bold';
     src: url('~/assets/font/Roboto/Roboto-Bold.ttf');
 }
@@ -11,6 +16,11 @@
 @font-face {
     font-family: 'Roboto Light';
     src: url('~/assets/font/Roboto/Roboto-Light.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto Light Italic';
+    src: url('~/assets/font/Roboto/Roboto-LightItalic.ttf');
 }
 
 * {

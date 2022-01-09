@@ -4,7 +4,16 @@
             <p>Name</p>
             <input type="text" placeholder="Search by pokemon name" v-model="searchedPokemon" @input="filteredList" />
         </div>
-        <div class="pokemon-list">
+        <div class="quantity">
+            <label for="quantity-pokemon">Number of pokemons displayed:</label>
+            <select v-model="quantityDisplayed" id="quantity-pokemon">
+                <option :value="20" @click="$fetch">20</option>
+                <option :value="40" @click="$fetch">40</option>
+                <option :value="60" @click="changeList(60)">60</option>
+                <option :value="80" @click="changeList(80)">80</option>
+            </select>
+        </div>
+        <div v-if="pokemonsList.length === quantityDisplayed" class="pokemon-list">
             <nuxt-link :to="`/pokemon/${pokemon.name}`" v-for="pokemon in pokemonsList" :key="pokemon.name">
                 <PokemonCard :name="pokemon.name" :url="pokemon.url"/>
             </nuxt-link>
@@ -22,6 +31,7 @@ export default {
         return {
             pokemonsList: [],
             pokemonsListBasic: [],
+            quantityDisplayed: 20,
             searchedPokemon: null
         }
     },
@@ -38,8 +48,12 @@ export default {
         }
     },
     async fetch () {
-        this.pokemonsListBasic = await this.$axios.$get('/pokemon').then(response => response.results)
+        if (this.pokemonsList.length >= this.quantityDisplayed) {
+            this.pokemonsList.length = this.quantityDisplayed
+        }
+        this.pokemonsListBasic = await this.$axios.$get('/pokemon?offset=0&limit=80').then(response => response.results)
         this.pokemonsList = this.pokemonsListBasic
+        this.pokemonsList.length = this.quantityDisplayed
     }
 }
 </script>

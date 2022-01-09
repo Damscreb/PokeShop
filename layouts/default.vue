@@ -22,6 +22,8 @@ export default {
     .content {
         max-width: 1200px;
         margin-inline: auto;
-        height:auto;
+        height: auto;
+        width: stretch;
+        width: -moz-available;
     }
 </style>
