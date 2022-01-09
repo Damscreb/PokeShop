@@ -78,6 +78,7 @@ export default {
             flex-direction: row;
             justify-content: unset;
             width: 100%;
+            position: relative;
         }
         & p {
             font-size: 1.4em;
@@ -105,7 +106,7 @@ export default {
         width: 25em;
         position: absolute;
         z-index: 1;
-        right: 130px;
-        top: 120px;
+        right: 25px;
+        top: -50px;
     }
 </style>

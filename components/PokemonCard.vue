@@ -14,7 +14,7 @@ export default {
     },
     async fetch () {
         if (this.$props.url) {
-            // To get the right route of the pokemon... Not the best
+            // To get the right route of the pokemon
             this.pokemon = await this.$axios.$get(`/${this.$props.url.split('v2/')[1]}`).then(response => response)
         }
     },

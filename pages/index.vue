@@ -9,8 +9,8 @@
             <select v-model="quantityDisplayed" id="quantity-pokemon">
                 <option :value="20" @click="$fetch">20</option>
                 <option :value="40" @click="$fetch">40</option>
-                <option :value="60" @click="changeList(60)">60</option>
-                <option :value="80" @click="changeList(80)">80</option>
+                <option :value="60" @click="$fetch">60</option>
+                <option :value="80" @click="$fetch">80</option>
             </select>
         </div>
         <div v-if="pokemonsList.length === quantityDisplayed" class="pokemon-list">
@@ -46,14 +46,15 @@ export default {
                 this.pokemonsList = this.pokemonsListBasic
             }
         }
-    }, // TRAVAIL EN COURS, Raccourcir ou rallonger pokemonslList
+    },
     async fetch () {
         if (this.pokemonsList.length >= this.quantityDisplayed) {
             this.pokemonsList.length = this.quantityDisplayed
+        } else {
+            this.pokemonsListBasic = await this.$axios.$get('/pokemon?offset=0&limit=80').then(response => response.results)
+            this.pokemonsList = this.pokemonsListBasic
+            this.pokemonsList.length = this.quantityDisplayed
         }
-        this.pokemonsListBasic = await this.$axios.$get('/pokemon?offset=0&limit=80').then(response => response.results)
-        this.pokemonsList = this.pokemonsListBasic
-        this.pokemonsList.length = this.quantityDisplayed
     }
 }
 </script>
@@ -91,5 +92,10 @@ export default {
         padding: 0.6em;
         width: 20em;
         outline: none
+    }
+
+    .quantity {
+        text-align: left;
+        margin-top: 1em;
     }
 </style>

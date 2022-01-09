@@ -11,7 +11,7 @@
                 :image="pokemon.sprites.other.dream_world.front_default
             "/>
         </div>
-        <ShopAndNumber :price="pokemon.base_experience" :number="pokemon.id"/>
+        <ShopAndNumber :pokename="pokemonName" :price="pokemon.base_experience" :number="pokemon.id"/>
     </div>
 </template>
 <script>
@@ -59,6 +59,11 @@ export default {
             .catch((error) => {
                 throw error
             })
+    },
+    head () {
+        return {
+            title: `Pokeshop - ${this.pokemonName.toUpperCase()}`
+        }
     }
 }
 </script>

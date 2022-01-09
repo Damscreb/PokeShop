@@ -1,13 +1,34 @@
 <template>
-    <header>
-        <Nuxt-link to="/"><h1>R</h1></Nuxt-link>
-        <ShopButton />
-    </header>
+    <div>
+        <header>
+            <Nuxt-link to="/"><h1>R</h1></Nuxt-link>
+            <ShopButton />
+        </header>
+        <MyCart v-if="toggle"/>
+    </div>
 </template>
 <script>
+import Bus from '~/plugin/event-bus.js'
+import MyCart from '~/components/MyCart.vue'
 import ShopButton from '~/components/ShopButton.vue'
 export default {
-    components: { ShopButton }
+    components: {
+        MyCart,
+        ShopButton
+    },
+    data () {
+        return {
+            toggle: false
+        }
+    },
+    created () {
+        Bus.$on('toggleCart', (toggleTrueFalse) => {
+            this.toggle = toggleTrueFalse
+        })
+        Bus.$on('toggleOff', () => {
+            this.toggle = false
+        })
+    }
 }
 </script>
 <style scoped>
@@ -21,6 +42,7 @@ export default {
         max-width: 100%;
         height: 80px;
         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
+        position: relative;
     }
 
     h1 {

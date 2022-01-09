@@ -3,17 +3,11 @@
         <div class="shop-container">
             <h3>{{ priceWithDollard }}</h3>
             <div class="add-buttons">
-                <button class="minus" @click="removeQuantity()">
-                    -
-                </button>
-                <p class="quantity">
-                    {{ quantity }}
-                </p>
-                <button class="plus" @click="addQuantity()">
-                    +
-                </button>
+                <button class="minus" @click="removeQuantity()">-</button>
+                <p class="quantity">{{ quantity }}</p>
+                <button class="plus" @click="addQuantity()">+</button>
             </div>
-            <button class="cart">Add to cart</button>
+            <button @click="sendData()" class="cart">Add to cart</button>
         </div>
         <div class="number-container">
             <p class="pokemon-id">{{ numberReworked(number) }}</p>
@@ -21,6 +15,7 @@
     </div>
 </template>
 <script>
+import Bus from '~/plugin/event-bus.js'
 export default {
     computed: {
         priceWithDollard () {
@@ -36,6 +31,11 @@ export default {
         number: {
             default: -1,
             type: Number,
+            required: true
+        },
+        pokename: {
+            default: 'Pikachu',
+            type: String,
             required: true
         },
         price: {
@@ -56,6 +56,14 @@ export default {
             if (this.quantity >= 1) {
                 this.quantity -= 1
             }
+        },
+        sendData () {
+            Bus.$emit('quantityDesired', {
+                id: this.$props.number,
+                name: this.$props.pokename,
+                price: this.$props.price,
+                quantity: this.quantity
+            })
         }
     }
 }
@@ -107,6 +115,9 @@ export default {
         font-size: 2.4em;
         background-color: #E5E5E5;
         color: var(--color-text-highlight);
+        &:hover {
+            outline: 2px var(--color-text-highlight) solid;
+        }
     }
 
     .cart {
