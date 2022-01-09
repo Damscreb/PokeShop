@@ -46,7 +46,7 @@ export default {
                 this.pokemonsList = this.pokemonsListBasic
             }
         }
-    },
+    }, // TRAVAIL EN COURS, Raccourcir ou rallonger pokemonslList
     async fetch () {
         if (this.pokemonsList.length >= this.quantityDisplayed) {
             this.pokemonsList.length = this.quantityDisplayed
