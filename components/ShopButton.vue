@@ -55,7 +55,8 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 1em 0 1em 1em;
+        height: 100%;
+        padding-left: 1em;
         border-left: 1px var(--color-text-highlight) solid;
         &:hover {
             cursor: pointer;
