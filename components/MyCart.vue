@@ -79,7 +79,6 @@ export default {
     },
     methods: {
         closeCart () {
-            console.log('closeCart')
             if (this.toggle) {
                 this.toggle = false
                 Bus.$emit('toggleOff', false)
@@ -88,7 +87,6 @@ export default {
             }
         },
         deleteEntry (pokemon) {
-            console.log('deleteentry')
             this.cart = this.cart.filter((item) => {
                 return item.id !== pokemon.id
             })

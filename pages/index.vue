@@ -13,12 +13,14 @@
                 <option :value="80" @click="$fetch">80</option>
             </select>
         </div>
-        <div v-if="researchError.length === 0" class="pokemon-list">
+        <div v-if="pokemonsList.length >= 1" class="pokemon-list">
             <nuxt-link :to="`/pokemon/${pokemon.name}`" v-for="pokemon in pokemonsList" :key="pokemon.name">
                 <PokemonCard :name="pokemon.name" :url="pokemon.url"/>
             </nuxt-link>
         </div>
-        <div v-else>{{ researchError }}</div>
+        <div v-else>
+            <h2>Pokemon Not Found</h2>
+        </div>
     </div>
 </template>
 <script>
@@ -33,7 +35,6 @@ export default {
             pokemonsList: [],
             pokemonsListBasic: [],
             quantityDisplayed: 20,
-            researchError: '',
             searchedPokemon: null
         }
     },
@@ -42,14 +43,14 @@ export default {
             this.searchedPokemon = this.searchedPokemon.toLowerCase()
             this.$axios.$get(`/pokemon/${this.searchedPokemon}`)
                 .then((response) => {
-                    console.log(response)
-                    console.log(this.pokemonsList)
-                    this.pokemonsList = response
-                    console.log(this.pokemonsList)
+                    const pokemonData = {
+                        name: response.name,
+                        url: `https://pokeapi.co/api/v2/pokemon/${response.name}`
+                    }
+                    this.pokemonsList = [pokemonData]
                 })
                 .catch(() => {
-                    this.researchError = 'Pokemon Not Found'
-                    console.log(this.researchError)
+                    this.pokemonsList = []
                 })
         },
         filteredList () {
