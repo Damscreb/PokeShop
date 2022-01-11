@@ -4,30 +4,16 @@
             <Nuxt-link to="/"><h1>R</h1></Nuxt-link>
             <ShopButton />
         </header>
-        <MyCart v-if="toggle"/>
+        <MyCart/>
     </div>
 </template>
 <script>
-import Bus from '~/plugin/event-bus.js'
 import MyCart from '~/components/MyCart.vue'
 import ShopButton from '~/components/ShopButton.vue'
 export default {
     components: {
         MyCart,
         ShopButton
-    },
-    data () {
-        return {
-            toggle: false
-        }
-    },
-    created () {
-        Bus.$on('toggleCart', (toggleTrueFalse) => {
-            this.toggle = toggleTrueFalse
-        })
-        Bus.$on('toggleOff', () => {
-            this.toggle = false
-        })
     }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="cart-block" @click="openCart()">
+    <div class="cart-block" @click.stop="openCart()">
         <img src="~/assets/images/cart.png" alt="Cart" />
         <p class="shop-text">Shopping cart</p>
         <div class="notification">
@@ -12,38 +12,37 @@ import Bus from '~/plugin/event-bus.js'
 export default {
     data () {
         return {
-            cart: null,
             notification: 0
         }
     },
     created () {
-        // We initialize our cart with the one saved in localStorage
-        if (JSON.parse(localStorage.getItem('myCart')) && JSON.parse(localStorage.getItem('myCart')).length > 0) {
-            this.cart = JSON.parse(localStorage.getItem('myCart'))
-            this.cart.forEach((element) => {
-                this.notification += element.quantity
+        const cartExist = localStorage.getItem('myCart')
+        if (cartExist !== null) {
+            const arrayPokemonQuantity = JSON.parse(localStorage.getItem('myCart')).map((data) => {
+                return data.quantity
             })
+            arrayPokemonQuantity.forEach((element) => {
+                this.notification += element
+                return element
+            })
+        } else {
+            this.notification = 0
         }
-
+        // Add some quantity
         Bus.$on('quantityDesired', (pokemonsData) => {
-            this.notification += pokemonsData.quantity
-
-            // Add the quantity only in this.cart if the same pokemon is already in the cart
-            if (this.cart) {
-                const founded = this.cart.find(data => data.id === pokemonsData.id)
-                if (founded) {
-                    founded.quantity += pokemonsData.quantity
-                } else {
-                    this.cart.push(pokemonsData)
-                }
-            } else {
-                this.cart = []
-                this.cart.push(pokemonsData)
-            }
-            localStorage.setItem('myCart', JSON.stringify(this.cart))
+            this.notification += parseInt(pokemonsData.quantity)
+        })
+        // Remove some quantity
+        Bus.$on('quantityRemoved', (minusNumber) => {
+            this.notification -= minusNumber
         })
     },
     methods: {
+        getPokemonsQuantity () {
+            parseInt(JSON.parse(localStorage.getItem('myCart')).map((data) => {
+                return data.quantity
+            }))
+        },
         openCart () {
             Bus.$emit('toggleCart', true)
         }

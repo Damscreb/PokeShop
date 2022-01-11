@@ -1,6 +1,6 @@
 <template>
-    <div v-click-outside="closeCart">
-        <div class="shop-container">
+    <div v-if="toggle" v-click-outside.self="closeCart">
+        <div v-if="cart.length > 0" class="shop-container">
             <div v-for="pokemon in cart" :key="pokemon.id">
                 <div class="title">
                     <p>{{ pokemon.name }}</p>
@@ -9,7 +9,7 @@
                 <div class="price">
                     <p class="price-calcul">{{ quantityAndPrice(pokemon.quantity, pokemon.price) }}</p>
                     <p class="price-total">{{ totalPrice(pokemon.quantity, pokemon.price) }}</p>
-                    <img src="~/assets/images/trash.png" alt="Bin's image">
+                    <img @click.stop="deleteEntry(pokemon)" src="~/assets/images/trash.png" alt="Bin's image">
                 </div>
             </div>
             <div class="total">
@@ -17,6 +17,9 @@
                 <p>{{ totalPriceDollar }}</p>
                 <div class="validate">Validate</div>
             </div>
+        </div>
+        <div v-else class="shop-container">
+            <h3>Panier vide</h3>
         </div>
     </div>
 </template>
@@ -30,7 +33,37 @@ export default {
         }
     },
     created () {
-        this.cart = JSON.parse(localStorage.getItem('myCart'))
+        // We initialize our cart with the one saved in localStorage
+        if (JSON.parse(localStorage.getItem('myCart')) && JSON.parse(localStorage.getItem('myCart')).length > 0) {
+            this.cart = JSON.parse(localStorage.getItem('myCart'))
+        } else {
+            this.cart = []
+        }
+
+        // We are listening to cart toggle
+        Bus.$on('toggleCart', () => {
+            this.toggle = true
+        })
+        Bus.$on('toggleOff', () => {
+            this.toggle = false
+        })
+
+        Bus.$on('quantityDesired', (pokemonsData) => {
+            // Add the quantity only in this.cart if the same pokemon is already in the cart
+            if (this.cart) {
+                const founded = this.cart.find(data => data.id === pokemonsData.id)
+                if (founded) {
+                    founded.quantity += pokemonsData.quantity
+                } else {
+                    this.cart.push(pokemonsData)
+                }
+            } else {
+                this.cart = []
+                this.cart.push(pokemonsData)
+            }
+            localStorage.setItem('myCart', JSON.stringify(this.cart))
+        })
+
         Bus.$on('toggleCart', (toggleTrueFalse) => {
             this.toggle = toggleTrueFalse
         })
@@ -39,18 +72,32 @@ export default {
     },
     data () {
         return {
-            cart: null,
+            cart: [],
             toggle: false,
             total: null
         }
     },
     methods: {
         closeCart () {
+            console.log('closeCart')
             if (this.toggle) {
+                this.toggle = false
                 Bus.$emit('toggleOff', false)
             } else {
                 this.toggle = true
             }
+        },
+        deleteEntry (pokemon) {
+            console.log('deleteentry')
+            this.cart = this.cart.filter((item) => {
+                return item.id !== pokemon.id
+            })
+            if (this.cart.length === 0) {
+                localStorage.removeItem('myCart')
+            } else {
+                localStorage.setItem('myCart', JSON.stringify(this.cart))
+            }
+            Bus.$emit('quantityRemoved', pokemon.quantity)
         },
         quantityAndPrice (quantity, price) {
             return `${quantity} x ${price}$`
@@ -148,5 +195,9 @@ export default {
                 cursor: pointer;
             }
         }
+    }
+
+    h3 {
+        text-align: center;
     }
 </style>

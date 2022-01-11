@@ -2,7 +2,7 @@
     <div class="homepage">
         <div class="research">
             <p>Name</p>
-            <input type="text" placeholder="Search by pokemon name" v-model="searchedPokemon" @input="filteredList" />
+            <input type="text" placeholder="Search by pokemon name" v-model="searchedPokemon" @input="filteredList" @keyup.enter="lookForPokemon"/>
         </div>
         <div class="quantity">
             <label for="quantity-pokemon">Number of pokemons displayed:</label>
@@ -13,11 +13,12 @@
                 <option :value="80" @click="$fetch">80</option>
             </select>
         </div>
-        <div v-if="pokemonsList.length === quantityDisplayed" class="pokemon-list">
+        <div v-if="researchError.length === 0" class="pokemon-list">
             <nuxt-link :to="`/pokemon/${pokemon.name}`" v-for="pokemon in pokemonsList" :key="pokemon.name">
                 <PokemonCard :name="pokemon.name" :url="pokemon.url"/>
             </nuxt-link>
         </div>
+        <div v-else>{{ researchError }}</div>
     </div>
 </template>
 <script>
@@ -32,10 +33,25 @@ export default {
             pokemonsList: [],
             pokemonsListBasic: [],
             quantityDisplayed: 20,
+            researchError: '',
             searchedPokemon: null
         }
     },
     methods: {
+        lookForPokemon () {
+            this.searchedPokemon = this.searchedPokemon.toLowerCase()
+            this.$axios.$get(`/pokemon/${this.searchedPokemon}`)
+                .then((response) => {
+                    console.log(response)
+                    console.log(this.pokemonsList)
+                    this.pokemonsList = response
+                    console.log(this.pokemonsList)
+                })
+                .catch(() => {
+                    this.researchError = 'Pokemon Not Found'
+                    console.log(this.researchError)
+                })
+        },
         filteredList () {
             // On renvoie des données seulement si on a mis 3 caractères minimum
             if (this.searchedPokemon.length >= 3) {
@@ -44,6 +60,8 @@ export default {
                 })
             } else {
                 this.pokemonsList = this.pokemonsListBasic
+                // Reset research
+                this.researchError = ''
             }
         }
     },
